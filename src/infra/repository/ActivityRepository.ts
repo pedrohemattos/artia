@@ -1,0 +1,28 @@
+import { Activity } from "../../entity/Activity"
+import { DatabaseConnection } from "../database/DatabaseConnection"
+
+export interface ActivityRepository {
+  saveActivity(activity: Activity): Promise<void>
+  getActivityById(id: string): Promise<Activity | null>
+}
+
+export class ActivityRepositoryDatabase extends DatabaseConnection implements ActivityRepository {
+
+  async saveActivity(activity: Activity) {
+    await this.activity.create({
+      data: {
+        ...activity
+      }
+    })
+  }
+
+  async getActivityById(id: string) {
+    const result = await this.activity.findUnique({
+      where: {
+        activityId: id
+      }
+    })
+    if(!result) return null
+    return Activity.restore(result.activityId, result.projectId, result.name, result.startDate, result.endDate, result.completed)
+  }
+}
