@@ -4,6 +4,7 @@ import { DatabaseConnection } from "../database/DatabaseConnection"
 export interface ActivityRepository {
   saveActivity(activity: Activity): Promise<void>
   getActivityById(id: string): Promise<Activity | null>
+  deleteActivity(id: string): Promise<void>
 }
 
 export class ActivityRepositoryDatabase extends DatabaseConnection implements ActivityRepository {
@@ -24,5 +25,13 @@ export class ActivityRepositoryDatabase extends DatabaseConnection implements Ac
     })
     if(!result) return null
     return Activity.restore(result.activityId, result.projectId, result.name, result.startDate, result.endDate, result.completed)
+  }
+
+  async deleteActivity(id: string) {
+    await this.activity.delete({
+      where: {
+        activityId: id
+      }
+    })
   }
 }

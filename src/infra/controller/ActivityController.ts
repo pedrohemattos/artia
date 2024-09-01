@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { ActivityRepositoryDatabase } from "../repository/ActivityRepository"
+import { ProjectRepositoryDatabase } from "../repository/ProjectRepository";
+import { GetActivityById } from "../../usecase/GetActivityById";
 import { CreateActivity } from "../../usecase/CreateActivity"
+import { DeleteActivity } from "../../usecase/DeleteActivity"
 import { DateRangeError } from "../../error/DateRangeError";
 import { NotFoundError } from "../../error/NotFoundError";
-import { GetActivityById } from "../../usecase/GetActivityById";
 
 export class ActivityController {
 
@@ -29,7 +31,8 @@ export class ActivityController {
   async create(request: Request, response: Response) {
     try {
       const activityRepository = new ActivityRepositoryDatabase()
-      const createActivity = new CreateActivity(activityRepository)
+      const projectRepository = new ProjectRepositoryDatabase()
+      const createActivity = new CreateActivity(activityRepository, projectRepository)
       const input = request.body
       const output = await createActivity.execute(input)
       return response.status(201).send({ 
@@ -40,6 +43,22 @@ export class ActivityController {
       if(error instanceof DateRangeError) return response.status(400).send({ message: error.message })
       return response.status(500).send({
         message: 'Error while creating activity',
+        error
+      })
+    }
+  }
+
+  async delete(request: Request, response: Response) {
+    try {
+      const activityRepository = new ActivityRepositoryDatabase()
+      const deleteActivity = new DeleteActivity(activityRepository)
+      const { id } = request.params
+      await deleteActivity.execute({ activityId: id })
+      return response.status(200).send({ message: "Activity successfully deleted" })
+    } catch (error) {
+      if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
+      return response.status(500).send({
+        message: "Error while deleting activity",
         error
       })
     }

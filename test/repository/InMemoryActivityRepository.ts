@@ -15,4 +15,8 @@ export class InMemoryActivityRepository implements ActivityRepository {
     return activity
   }
 
+  async deleteActivity(id: string) {
+    const index = this.activities.findIndex(activity => activity.activityId === id)
+    this.activities.splice(index, 1)
+  }
 }
