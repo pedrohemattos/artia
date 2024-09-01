@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { ProjectRepositoryDatabase } from "../repository/ProjectRepository"
+import { GetProjectById } from "../../usecase/GetProjectById";
+import { GetAllProjects } from "../../usecase/GetAllProjects"
 import { CreateProject } from "../../usecase/CreateProject"
 import { DateRangeError } from "../../error/DateRangeError";
 import { NotFoundError } from "../../error/NotFoundError";
-import { GetProjectById } from "../../usecase/GetProjectById";
 
 export class ProjectController {
 
@@ -21,6 +22,23 @@ export class ProjectController {
       if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
       return response.status(500).send({
         message: 'Error while getting project by id',
+        error
+      })
+    }
+  }
+
+  async list(request: Request, response: Response) {
+    try {
+      const projectRepository = new ProjectRepositoryDatabase()
+      const getAllProjects = new GetAllProjects(projectRepository)
+      const output = await getAllProjects.execute()
+      return response.status(200).send({
+        message: "Projects successfully listed",
+        value: output
+      })
+    } catch (error) {
+      return response.status(500).send({
+        message: 'Error while listing projects',
         error
       })
     }
