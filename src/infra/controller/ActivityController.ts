@@ -5,6 +5,7 @@ import { GetActivityById } from "../../usecase/GetActivityById";
 import { GetActivitiesByProject } from "../../usecase/GetActivitiesByProject"
 import { CreateActivity } from "../../usecase/CreateActivity"
 import { DeleteActivity } from "../../usecase/DeleteActivity"
+import { ConcludeActivity } from "../../usecase/ConcludeActivity"
 import { DateRangeError } from "../../error/DateRangeError";
 import { NotFoundError } from "../../error/NotFoundError";
 
@@ -80,6 +81,21 @@ export class ActivityController {
       if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
       return response.status(500).send({
         message: "Error while deleting activity",
+        error
+      })
+    }
+  }
+
+  async conclude(request: Request, response: Response) {
+    try {
+      const activityRepository = new ActivityRepositoryDatabase()
+      const concludeActivity = new ConcludeActivity(activityRepository)
+      const { id } = request.params
+      await concludeActivity.execute({ activityId: id })
+      return response.status(200).send({ message: "Activity successfully concluded" })
+    } catch (error) {
+      return response.status(500).send({
+        message: "Error while concluding activity",
         error
       })
     }

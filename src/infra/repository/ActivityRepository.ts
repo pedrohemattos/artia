@@ -5,6 +5,7 @@ export interface ActivityRepository {
   saveActivity(activity: Activity): Promise<void>
   getActivityById(id: string): Promise<Activity | null>
   getActivitiesByProject(projectId: string): Promise<Activity[]>
+  updateActivity(activity: Activity): Promise<void>
   deleteActivity(id: string): Promise<void>
 }
 
@@ -35,6 +36,17 @@ export class ActivityRepositoryDatabase extends DatabaseConnection implements Ac
       }
     })
     return result.map(activity => Activity.restore(activity.activityId, activity.projectId, activity.name, activity.startDate, activity.endDate, activity.completed))
+  }
+
+  async updateActivity(activity: Activity) {
+    await this.activity.update({
+      where: {
+        activityId: activity.activityId
+      },
+      data: {
+        ...activity
+      }
+    })
   }
 
   async deleteActivity(id: string) {
