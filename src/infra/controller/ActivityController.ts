@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ActivityRepositoryDatabase } from "../repository/ActivityRepository"
 import { ProjectRepositoryDatabase } from "../repository/ProjectRepository";
 import { GetActivityById } from "../../usecase/GetActivityById";
+import { GetActivitiesByProject } from "../../usecase/GetActivitiesByProject"
 import { CreateActivity } from "../../usecase/CreateActivity"
 import { DeleteActivity } from "../../usecase/DeleteActivity"
 import { DateRangeError } from "../../error/DateRangeError";
@@ -23,6 +24,26 @@ export class ActivityController {
       if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
       return response.status(500).send({
         message: 'Error while getting activity by id',
+        error
+      })
+    }
+  }
+
+  async list(request: Request, response: Response) {
+    try {
+      const activityRepository = new ActivityRepositoryDatabase()
+      const projectRepository = new ProjectRepositoryDatabase()
+      const getActivitiesByProject = new GetActivitiesByProject(activityRepository, projectRepository)
+      const { id } = request.params
+      const output = await getActivitiesByProject.execute({ projectId: id })
+      return response.status(200).send({ 
+        message: "Activities successfully listed",
+        value: output
+      })
+    } catch (error) {
+      if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
+      return response.status(500).send({
+        message: 'Error while listing activities by project',
         error
       })
     }
