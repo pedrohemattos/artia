@@ -8,7 +8,14 @@ export class GetActivityById {
   async execute(input: Input): Promise<Output> {
     const activity = await this.activityRepository.getActivityById(input.activityId)
     if(!activity) throw new NotFoundError('Activity')
-    return activity;
+    return {
+      activityId: activity.activityId,
+      projectId: activity.projectId,
+      name: activity.name,
+      startDate: activity.startDate,
+      endDate: activity.endDate,
+      completed: activity.completed
+    };
   }
 }
 
@@ -18,7 +25,9 @@ type Input = {
 
 type Output = {
   activityId: string
+  projectId: string
   name: string
   startDate: Date
-  endDate: Date  
+  endDate: Date
+  completed: boolean
 }
