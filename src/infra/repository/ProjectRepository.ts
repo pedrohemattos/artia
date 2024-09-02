@@ -5,6 +5,7 @@ export interface ProjectRepository {
   saveProject(project: Project): Promise<void>
   getProjectById(id: string): Promise<Project | null>
   getAllProjects(): Promise<Project[]>
+  updateProject(project: Project): Promise<void>
 }
 
 export class ProjectRepositoryDatabase extends DatabaseConnection implements ProjectRepository {
@@ -15,13 +16,14 @@ export class ProjectRepositoryDatabase extends DatabaseConnection implements Pro
         projectId: project.projectId,
         name: project.name,
         startDate: project.startDate,
-        endDate: project.endDate
+        endDate: project.endDate,
+        completed: project.completed
       }
     })
   }
 
   async getProjectById(id: string) {
-    const result = await this.project.findUnique({
+    const project = await this.project.findUnique({
       where: {
         projectId: id
       },
@@ -29,12 +31,27 @@ export class ProjectRepositoryDatabase extends DatabaseConnection implements Pro
         activities: true
       }
     })
-    if(!result) return null
-    return Project.restore(result.projectId, result.name, result.startDate, result.endDate, result.activities)
+    if(!project) return null
+    return Project.restore(project.projectId, project.name, project.startDate, project.endDate, project.completed, project.activities)
   }
 
   async getAllProjects() {
-    const result = await this.project.findMany()
-    return result.map(project => Project.restore(project.projectId, project.name, project.startDate, project.endDate))
+    const projects = await this.project.findMany()
+    return projects.map(project => Project.restore(project.projectId, project.name, project.startDate, project.endDate, project.completed))
+  }
+
+  async updateProject(project: Project) {
+    await this.project.update({
+      where: {
+        projectId: project.projectId
+      },
+      data: {
+        name: project.name,
+        projectId: project.projectId,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        completed: project.completed
+      }
+    })
   }
 }

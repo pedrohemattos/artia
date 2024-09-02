@@ -14,7 +14,13 @@ export class InMemoryProjectRepository implements ProjectRepository {
     return project
   }
   
-  async getAllProjects(): Promise<Project[]> {
-    throw new Error("Method not implemented.");
+  async getAllProjects() {
+    return this.projects
+  }
+
+  async updateProject(project: Project): Promise<void> {
+    const { projectId } = project
+    const index = this.projects.findIndex(project => project.projectId === projectId)
+    this.projects.splice(index, 1, project)
   }
 }

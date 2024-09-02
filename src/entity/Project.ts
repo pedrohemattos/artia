@@ -8,6 +8,7 @@ export class Project {
     readonly name: string,
     readonly startDate: Date,
     readonly endDate: Date,
+    readonly completed: boolean,
     readonly progress?: number,
     readonly overdue?: boolean,
     readonly activities?: Activity[]
@@ -15,16 +16,17 @@ export class Project {
 
   static create(name: string, startDate: Date, endDate: Date) {
     const projectId = crypto.randomUUID()
-    return new Project(projectId, name, startDate, endDate)
+    const completed = false
+    return new Project(projectId, name, startDate, endDate, completed)
   }
 
-  static restore(projectId: string, name: string, startDate: Date, endDate: Date, activities?: Activity[]) {
+  static restore(projectId: string, name: string, startDate: Date, endDate: Date, completed: boolean, activities?: Activity[]) {
     if(!activities) {
-      return new Project(projectId, name, startDate, endDate)
+      return new Project(projectId, name, startDate, endDate, completed)
     }
     const progress = this.calculateProgress(activities)
     const overdue = this.checkOverdue(endDate, activities)
-    return new Project(projectId, name, startDate, endDate, progress, overdue, activities)
+    return new Project(projectId, name, startDate, endDate, completed, progress, overdue, activities)
   }
 
   static calculateProgress(activities: Activity[]) {

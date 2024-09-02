@@ -3,8 +3,10 @@ import { ProjectRepositoryDatabase } from "../repository/ProjectRepository"
 import { GetProjectById } from "../../usecase/GetProjectById";
 import { GetAllProjects } from "../../usecase/GetAllProjects"
 import { CreateProject } from "../../usecase/CreateProject"
+import { ConcludeProject } from "../../usecase/ConcludeProject"
 import { DateRangeError } from "../../error/DateRangeError";
 import { NotFoundError } from "../../error/NotFoundError";
+import { AlreadyConcludedError } from "../../error/AlreadyConcludedError";
 
 export class ProjectController {
 
@@ -56,6 +58,24 @@ export class ProjectController {
       })
     } catch (error) {
       if(error instanceof DateRangeError) return response.status(400).send({ message: error.message })
+      return response.status(500).send({
+        message: 'Error while creating project',
+        error
+      })
+    }
+  }
+
+  async conclude(request: Request, response: Response) {
+    try {
+      const projectRepository = new ProjectRepositoryDatabase()
+      const concludeProject = new ConcludeProject(projectRepository)
+      const { id } = request.params
+      await concludeProject.execute({ projectId: id })
+      return response.status(200).send({ message: "Project successfully concluded" })
+    } catch (error) {
+      if(error instanceof NotFoundError || error instanceof AlreadyConcludedError) {
+        return response.status(400).send({ message: error.message })
+      }
       return response.status(500).send({
         message: 'Error while creating project',
         error
