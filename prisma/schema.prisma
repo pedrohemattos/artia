@@ -26,7 +26,7 @@ model Activity {
   projectId  String   @map("project_id")
   completed  Boolean
 
-  Project Project @relation(fields: [projectId], references: [projectId])
+  Project Project @relation(fields: [projectId], references: [projectId], onDelete: Cascade)
 
   @@map("activities")
 }

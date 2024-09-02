@@ -6,6 +6,7 @@ export interface ProjectRepository {
   getProjectById(id: string): Promise<Project | null>
   getAllProjects(): Promise<Project[]>
   updateProject(project: Project): Promise<void>
+  deleteProject(id: string): Promise<void>
 }
 
 export class ProjectRepositoryDatabase extends DatabaseConnection implements ProjectRepository {
@@ -51,6 +52,14 @@ export class ProjectRepositoryDatabase extends DatabaseConnection implements Pro
         startDate: project.startDate,
         endDate: project.endDate,
         completed: project.completed
+      }
+    })
+  }
+
+  async deleteProject(id: string) {
+    await this.project.delete({
+      where: {
+        projectId: id
       }
     })
   }

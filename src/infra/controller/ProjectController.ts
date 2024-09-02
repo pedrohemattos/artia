@@ -4,6 +4,7 @@ import { GetProjectById } from "../../usecase/GetProjectById";
 import { GetAllProjects } from "../../usecase/GetAllProjects"
 import { CreateProject } from "../../usecase/CreateProject"
 import { ConcludeProject } from "../../usecase/ConcludeProject"
+import { DeleteProject } from "../../usecase/DeleteProject"
 import { DateRangeError } from "../../error/DateRangeError";
 import { NotFoundError } from "../../error/NotFoundError";
 import { AlreadyConcludedError } from "../../error/AlreadyConcludedError";
@@ -60,6 +61,22 @@ export class ProjectController {
       if(error instanceof DateRangeError) return response.status(400).send({ message: error.message })
       return response.status(500).send({
         message: 'Error while creating project',
+        error
+      })
+    }
+  }
+
+  async delete(request: Request, response: Response) {
+    try {
+      const projectRepository = new ProjectRepositoryDatabase()
+      const deleteProject = new DeleteProject(projectRepository)
+      const { id } = request.params
+      await deleteProject.execute({ projectId: id })
+      return response.status(200).send({ message: "Project successfully deleted" })
+    } catch (error) {
+      if(error instanceof NotFoundError) return response.status(404).send({ message: error.message })
+      return response.status(500).send({
+        message: "Error while deleting project",
         error
       })
     }
