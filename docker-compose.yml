@@ -1,16 +1,24 @@
+version: '3.8'
+
 services:
-  app: 
+  api: 
     build: ./back
-    container_name: artia-app
+    container_name: api-artia-challenge
     ports:
-      - 3333:3333
+      - 3000:3000
     depends_on:
+      postgres:
+        condition: service_healthy
+    links:
       - postgres
     volumes:
       - ./back:/app
+    command: sh -c "npx prisma migrate dev && npm run dev"
+    environment:
+      DATABASE_URL: "postgresql://user:password@postgres:5432/postgres"
 
   postgres:
-    container_name: artia-database
+    container_name: database-artia-challenge
     image: postgres
     ports:
       - 5432:5432
@@ -21,4 +29,20 @@ services:
       PGDATA: /data/postgres
     volumes: 
       - ./back/data/pg:/data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  front:
+    build: ./front
+    container_name: front-artia-challenge
+    ports:
+      - 5173:5173
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
 
