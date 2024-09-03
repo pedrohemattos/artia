@@ -23,4 +23,9 @@ export class InMemoryProjectRepository implements ProjectRepository {
     const index = this.projects.findIndex(project => project.projectId === projectId)
     this.projects.splice(index, 1, project)
   }
+
+  async deleteProject(id: string) {
+    const index = this.projects.findIndex(project => project.projectId === id)
+    this.projects.splice(index, 1)
+  }
 }

@@ -1,24 +1,24 @@
 services:
   app: 
-    build: .
+    build: ./back
     container_name: artia-app
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - 3333:3333
     depends_on:
       - postgres
     volumes:
-      - .:/app
+      - ./back:/app
 
   postgres:
     container_name: artia-database
     image: postgres
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - 5432:5432
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
       PGDATA: /data/postgres
     volumes: 
-      - ./data/pg:/data/postgres
+      - ./back/data/pg:/data/postgres
 

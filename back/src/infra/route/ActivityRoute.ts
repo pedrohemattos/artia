@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { ActivityController } from "../controller/ActivityController"
+import { ActivityValidateSchema } from "../validators/ActivityValidateSchema"
 
 const activityRouter = Router()
 

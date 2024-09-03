@@ -62,7 +62,7 @@ export class ActivityController {
         value: output
       })
     } catch (error) {
-      if(error instanceof DateRangeError) return response.status(400).send({ message: error.message })
+      if(error instanceof DateRangeError || error instanceof NotFoundError) return response.status(400).send({ message: error.message })
       return response.status(500).send({
         message: 'Error while creating activity',
         error
