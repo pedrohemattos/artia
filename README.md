@@ -8,16 +8,20 @@ Estrutura do Projeto:
 - BD: PostgreSQL
 
 # Como executar a aplicação:
-1. Utilizando Docker:
+1. Utilizando Docker Compose:
 - Basta executar o comando: `docker compose up -d --build`
 - Após a conclusão do build e a subida dos containers, acesse a aplicação em http://localhost:5173 no seu navegador.
 
 2. Manualmente:
 
+    BD
+    - Na raiz do projeto, execute: `docker compose up postgres -d`
+
     API
     - Acesse a pasta "back"
     - Instale as dependências: `npm install`
     - Crie um arquivo .env a partir do template: cp .env.example .env
+    - Execute as migrations: `npx prisma migrate dev`
     - Execute a api: `npm run dev`
     
     FRONT
