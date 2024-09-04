@@ -28,7 +28,4 @@ Estrutura do Projeto:
     - Acesse a pasta "front"
     - Instale as dependências: `npm install`
     - Execute o front: `npm run dev`
-    
-    BD
-    - Na raiz do projeto, execute: `docker compose up postgres -d`
 
