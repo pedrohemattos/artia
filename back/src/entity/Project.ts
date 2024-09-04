@@ -36,7 +36,7 @@ export class Project {
     activities.forEach(activity => {
       if(activity.completed) totalCompleted++
     })
-    return totalCompleted ? Number(((total / totalCompleted) * 100).toFixed(2)) : 0
+    return totalCompleted ? Number(((totalCompleted / total) * 100).toFixed(2)) : 0
   }
 
   static checkOverdue(projectEndDate: Date, activities: Activity[]) {
