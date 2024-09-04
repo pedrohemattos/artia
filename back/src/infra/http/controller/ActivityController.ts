@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { ActivityRepositoryDatabase } from "../repository/ActivityRepository"
-import { ProjectRepositoryDatabase } from "../repository/ProjectRepository";
-import { GetActivityById } from "../../usecase/GetActivityById";
-import { GetActivitiesByProject } from "../../usecase/GetActivitiesByProject"
-import { CreateActivity } from "../../usecase/CreateActivity"
-import { DeleteActivity } from "../../usecase/DeleteActivity"
-import { ConcludeActivity } from "../../usecase/ConcludeActivity"
-import { DateRangeError } from "../../error/DateRangeError";
-import { NotFoundError } from "../../error/NotFoundError";
+import { ActivityRepositoryDatabase } from "../../repository/ActivityRepository"
+import { ProjectRepositoryDatabase } from "../../repository/ProjectRepository";
+import { GetActivityById } from "../../../usecase/GetActivityById";
+import { GetActivitiesByProject } from "../../../usecase/GetActivitiesByProject"
+import { CreateActivity } from "../../../usecase/CreateActivity"
+import { DeleteActivity } from "../../../usecase/DeleteActivity"
+import { ConcludeActivity } from "../../../usecase/ConcludeActivity"
+import { DateRangeError } from "../../../error/DateRangeError";
+import { NotFoundError } from "../../../error/NotFoundError";
 
 export class ActivityController {
 

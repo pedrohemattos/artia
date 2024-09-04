@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { ProjectRepositoryDatabase } from "../repository/ProjectRepository"
-import { GetProjectById } from "../../usecase/GetProjectById";
-import { GetAllProjects } from "../../usecase/GetAllProjects"
-import { CreateProject } from "../../usecase/CreateProject"
-import { ConcludeProject } from "../../usecase/ConcludeProject"
-import { DeleteProject } from "../../usecase/DeleteProject"
-import { DateRangeError } from "../../error/DateRangeError";
-import { NotFoundError } from "../../error/NotFoundError";
-import { AlreadyConcludedError } from "../../error/AlreadyConcludedError";
+import { ProjectRepositoryDatabase } from "../../repository/ProjectRepository"
+import { GetProjectById } from "../../../usecase/GetProjectById";
+import { GetAllProjects } from "../../../usecase/GetAllProjects"
+import { CreateProject } from "../../../usecase/CreateProject"
+import { ConcludeProject } from "../../../usecase/ConcludeProject"
+import { DeleteProject } from "../../../usecase/DeleteProject"
+import { DateRangeError } from "../../../error/DateRangeError";
+import { NotFoundError } from "../../../error/NotFoundError";
+import { AlreadyConcludedError } from "../../../error/AlreadyConcludedError";
 
 export class ProjectController {
 

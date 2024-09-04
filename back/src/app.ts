@@ -1,5 +1,5 @@
 import express, { Express } from "express"
-import routes from "./infra/route/index"
+import routes from "./infra/http/route/index"
 import cors from "cors"
 
 class App {
