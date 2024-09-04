@@ -13,7 +13,7 @@ services:
       - postgres
     volumes:
       - ./back:/app
-    command: sh -c "npx prisma migrate dev && npm run dev"
+    command: sh -c "npx prisma migrate dev --skip-generate && npm run dev"
     environment:
       DATABASE_URL: "postgresql://user:password@postgres:5432/postgres"
 
