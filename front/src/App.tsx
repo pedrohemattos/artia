@@ -1,63 +1,59 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'
+import { useEffect, useState } from "react"
+import axios from "axios"
+import CreateProjectModal from "./components/CreateProjectModal"
+import ProjectsTable from "./components/ProjectsTable"
+import ProjectModal from "./components/ProjectModal"
+import { Project } from "./types"
 
 function App() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [selectedProjectId, setSelectedProjectId] = useState('')
+  const [createProjectOpen, setCreateProjectOpen] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const handleRowClick = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setDetailsOpen(true);
+  };
+
+  const getProjects = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:3000/api/project")
+      setProjects(data.value.projects)
+    } catch (error) {}
+  }
 
   useEffect(() => {
-    fetch("http://localhost:3333/api/project")
-      .then((data) => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  })
+    getProjects()
+  }, [])
 
   return (
-    <>
-      <div>
-        <h1>Listagem de projetos</h1>
-        <TableContainer>
-          <Table variant='simple' size='lg'>
-            <Thead>
-              <Tr>
-                <Th>Título</Th>
-                <Th>Início</Th>
-                <Th>Prazo</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>inches</Td>
-                <Td>millimetres (mm)</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
-              <Tr>
-                <Td>feet</Td>
-                <Td>centimetres (cm)</Td>
-                <Td isNumeric>30.48</Td>
-              </Tr>
-              <Tr>
-                <Td>yards</Td>
-                <Td>metres (m)</Td>
-                <Td isNumeric>0.91444</Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
+    <div className="w-3/5 mx-auto py-8">
+      <div className="flex flex-row justify-between items-center mb-6">
+        <h1 className="font-bold text-2xl">Projetos</h1>
+        <button
+          className="bg-teal-300 hover:bg-teal-400 text-white font-bold px-4 py-2 rounded-lg"
+          onClick={() => setCreateProjectOpen(true)}
+        >
+          + Criar projeto
+        </button>
       </div>
-    </>
+      <ProjectsTable 
+        projects={projects} 
+        onRowClick={handleRowClick} 
+      />
+     <ProjectModal
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        projectId={selectedProjectId}
+        onProjectConcluded={getProjects}
+      />
+      <CreateProjectModal 
+        open={createProjectOpen} 
+        onClose={() => setCreateProjectOpen(false)} 
+        onProjectCreated={getProjects} 
+      />
+    </div>
   )
 }
 

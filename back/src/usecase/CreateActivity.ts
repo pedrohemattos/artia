@@ -15,7 +15,7 @@ export class CreateActivity {
     if(input.startDate > input.endDate) throw new DateRangeError({ type: 'default' })
     const project = await this.projectRepository.getProjectById(input.projectId)
     if(!project) throw new NotFoundError('Project')
-    if(input.startDate < project.startDate) throw new DateRangeError({ type: 'activity' })
+    if(new Date(input.startDate) < new Date(project.startDate)) throw new DateRangeError({ type: 'activity' })
     const activity = Activity.create(input.projectId, input.name, input.startDate, input.endDate)
     await this.activityRepository.saveActivity(activity)
     return {
